@@ -1,0 +1,188 @@
+Transcripción Chat Bot
+
+---
+
+usuario: ¿Comando para activar el entorno virtual?
+Referencia: Terminal
+
+Agente: Para activar el entorno virtual en Windows PowerShell:
+{
+.\venv\Scripts\Activate.ps1
+}
+
+---
+
+usuario: Dame el comando para autorizar que se pueda activar el entorno virtual
+Referencia: Terminal
+
+Agente: Para permitir la ejecución de scripts en PowerShell:
+{
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+}
+
+---
+
+usuario: ¿Comando para restaurar dependencias?
+Referencia: Terminal
+
+Agente: Para instalar dependencias desde requirements.txt:
+{
+pip install -r requirements.txt
+}
+
+---
+
+usuario: ¿Qué hace el main.py?
+Referencia: app/main.py
+
+Agente: El archivo main.py es el punto de entrada de la aplicación FastAPI. Crea la instancia de la app, incluye el router de tareas y define la ruta raíz. Ejemplo de código:
+{
+from fastapi import FastAPI
+from app.routers.tasks_router import tasks_router
+
+app = FastAPI()
+app.include_router(tasks_router, prefix="/tasks", tags=["tasks"])
+
+@app.get("/")
+async def root():
+    return {"message": "Task Manager API"}
+}
+
+---
+
+usuario: ¿Para qué sirven los endpoints en tasks_router.py?
+Referencia: app/routers/tasks_router.py
+
+Agente: Los endpoints permiten crear, consultar, actualizar y eliminar tareas. Ejemplo:
+{
+@tasks_router.post("/", response_model=Task)
+async def create_task(task: Task):
+    ...
+}
+
+@tasks_router.get("/{task_id}", response_model=Task)
+async def get_task(task_id: int):
+    ...
+}
+}
+
+---
+
+usuario: ¿Cómo está construida la base de datos?
+Referencia: app/db.py
+
+Agente: La base de datos es una clase FakeDB que almacena las tareas en una lista en memoria. Ejemplo:
+{
+class FakeDB:
+    def __init__(self):
+        self.tasks = []
+    ...
+}
+
+---
+
+usuario: ¿Cómo se inicializa el aplicativo?
+Referencia: app/main.py
+
+Agente: Se crea la instancia FastAPI, se inicializa la base de datos y se incluyen los routers. Se ejecuta con:
+{
+uvicorn app.main:app --reload
+}
+
+---
+
+usuario: Añade un endpoint que elimine todos los registros de la base de datos en tasks_router.py
+Referencia: app/routers/tasks_router.py, líneas 87-92
+
+Agente: Se agregó:
+{
+@tasks_router.delete("/")
+async def delete_all_tasks():
+    db.delete_all_tasks()
+    return {"message": "All tasks deleted"}
+}
+
+---
+
+usuario: Documenta todas las funciones de tasks_router.py
+Referencia: app/routers/tasks_router.py
+
+Agente: Se agregaron docstrings a cada función, por ejemplo:
+{
+"""
+Crea una nueva tarea y la agrega a la base de datos.
+Args:
+    task (Task): Objeto con los datos de la tarea a crear.
+Returns:
+    Task: La tarea creada con su ID asignado.
+"""
+}
+
+---
+
+usuario: Haz un historial de cambios en challenge.md
+Referencia: challenge.md
+
+Agente: Se creó la sección 'Cambios Actividad' con los cambios realizados.
+
+---
+
+usuario: Encuentra los Code Smells o mejoras del proyecto
+Referencia: Análisis general
+
+Agente: Se listaron mejoras como: persistencia real, validación de entradas, seguridad, manejo de errores, logging, pruebas, documentación, optimización y modularidad.
+
+---
+
+usuario: Implementa la opción 2 (validación de entradas) y haz pruebas unitarias
+Referencia: app/test_validation.py
+
+Agente: Se crearon pruebas como:
+{
+def test_create_task_valid():
+    response = client.post("/tasks/", json={"title": "Tarea válida", ...})
+    assert response.status_code == 200
+}
+}
+
+---
+
+usuario: Implementa autenticación básica para los endpoints y haz pruebas
+Referencia: app/routers/tasks_router.py, app/test_auth.py
+
+Agente: Se agregó autenticación básica con HTTPBasic y pruebas unitarias para endpoints protegidos.
+
+---
+
+usuario: Implementa excepción personalizada y manejador global de errores
+Referencia: app/routers/tasks_router.py, app/main.py, app/test_errors.py
+
+Agente: Se creó TaskNotFoundException y un handler global:
+{
+@app.exception_handler(TaskNotFoundException)
+async def task_not_found_exception_handler(...):
+    return JSONResponse(status_code=404, content={"detail": "La tarea no fue encontrada"})
+}
+
+---
+
+usuario: Implementa logging en consola y archivo
+Referencia: app/main.py, app/routers/tasks_router.py
+
+Agente: Se configuró logging con logging.basicConfig y se agregaron logs en los endpoints principales.
+
+---
+
+usuario: Crea pruebas unitarias para el flujo CRUD básico
+Referencia: app/test_crud.py
+
+Agente: Se crearon pruebas para crear, listar y actualizar tareas.
+
+---
+
+usuario: Mejora la documentación técnica en README.md en español e inglés
+Referencia: app/README.md
+
+Agente: Se amplió el README.md con descripción, estructura, endpoints, autenticación, logging, manejo de errores y pruebas en ambos idiomas.
+
+--- 
