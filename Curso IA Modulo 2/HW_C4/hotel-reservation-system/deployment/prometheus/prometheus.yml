@@ -1,0 +1,80 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # API Gateway monitoring
+  - job_name: 'api-gateway'
+    static_configs:
+      - targets: ['api-gateway:8000']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # Auth Service monitoring
+  - job_name: 'auth-service'
+    static_configs:
+      - targets: ['auth-service:8001']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # Booking Service monitoring
+  - job_name: 'booking-service'
+    static_configs:
+      - targets: ['booking-service:8002']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # Inventory Service monitoring
+  - job_name: 'inventory-service'
+    static_configs:
+      - targets: ['inventory-service:8003']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # Payment Service monitoring
+  - job_name: 'payment-service'
+    static_configs:
+      - targets: ['payment-service:8004']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # Notification Service monitoring
+  - job_name: 'notification-service'
+    static_configs:
+      - targets: ['notification-service:8005']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # PostgreSQL monitoring (si se instala postgres_exporter)
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:5432']
+    scrape_interval: 60s
+
+  # Redis monitoring (si se instala redis_exporter)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+    scrape_interval: 60s
+
+  # Nginx monitoring (si se configura nginx-prometheus-exporter)
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx:80']
+    metrics_path: '/nginx_status'
+    scrape_interval: 30s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
