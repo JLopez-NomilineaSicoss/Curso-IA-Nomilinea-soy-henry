@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 Sistema de Consulta de Noticias</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <h1>Sistema de Consulta de Noticias</h1>
+                </div>
+                <div class="status-indicator">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span class="status-text" id="statusText">Conectando...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-cog"></i> Configuración</h3>
+                    <div class="config-info">
+                        <div class="config-item">
+                            <label>LLM:</label>
+                            <span id="llmProvider">-</span>
+                        </div>
+                        <div class="config-item">
+                            <label>Embeddings:</label>
+                            <span id="embeddingProvider">-</span>
+                        </div>
+                        <div class="config-item">
+                            <label>Costo:</label>
+                            <span class="free-badge">GRATUITO</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-chart-bar"></i> Estadísticas</h3>
+                    <div class="stats-info">
+                        <div class="stat-item">
+                            <label>Documentos:</label>
+                            <span id="documentCount">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <label>Fuentes:</label>
+                            <span id="sourceCount">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <label>Mensajes:</label>
+                            <span id="messageCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-tools"></i> Acciones</h3>
+                    <div class="actions">
+                        <button class="btn btn-secondary" id="clearMemoryBtn">
+                            <i class="fas fa-broom"></i>
+                            Limpiar Memoria
+                        </button>
+                        <button class="btn btn-secondary" id="refreshStatsBtn">
+                            <i class="fas fa-sync-alt"></i>
+                            Actualizar Stats
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-question-circle"></i> Ayuda</h3>
+                    <div class="help-info">
+                        <div class="help-item">
+                            <strong>📰 Noticias:</strong>
+                            <p>"¿Qué noticias hay sobre tecnología?"</p>
+                        </div>
+                        <div class="help-item">
+                            <strong>🧠 General:</strong>
+                            <p>"¿Qué es la inteligencia artificial?"</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Chat Area -->
+            <section class="chat-area">
+                <div class="chat-header">
+                    <h2>💬 Chat con IA</h2>
+                    <div class="chat-info">
+                        <span id="processingTime"></span>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message system-message">
+                        <div class="message-content">
+                            <i class="fas fa-robot"></i>
+                            <div class="message-text">
+                                <h3>¡Hola! 👋</h3>
+                                <p>Soy tu asistente de noticias con IA. Puedo ayudarte con:</p>
+                                <ul>
+                                    <li>📰 <strong>Noticias actuales</strong> de CNN Español y CBC News</li>
+                                    <li>🧠 <strong>Preguntas generales</strong> sobre cualquier tema</li>
+                                    <li>💾 <strong>Conversaciones contextuales</strong> que recuerdo</li>
+                                </ul>
+                                <p>¡Pregúntame lo que quieras!</p>
+                            </div>
+                        </div>
+                        <div class="message-time">Sistema iniciado</div>
+                    </div>
+                </div>
+
+                <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span>IA está escribiendo...</span>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="chat-input">
+                        <input 
+                            type="text" 
+                            id="messageInput" 
+                            placeholder="Escribe tu pregunta aquí..." 
+                            maxlength="500"
+                        >
+                        <button id="sendButton" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="input-footer">
+                        <span class="char-counter">
+                            <span id="charCount">0</span>/500
+                        </span>
+                        <span class="powered-by">
+                            Powered by <strong>Groq</strong> + <strong>Google AI</strong> 🆓
+                        </span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <span>Sistema de Consulta de Noticias con LangChain | 2025</span>
+                <div class="footer-links">
+                    <a href="#" onclick="showAbout()">Acerca de</a>
+                    <a href="#" onclick="showHelp()">Ayuda</a>
+                    <a href="https://github.com" target="_blank">GitHub</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-robot fa-spin"></i>
+            <p>Inicializando sistema de IA...</p>
+            <div class="loading-progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for notifications -->
+    <div class="modal" id="notificationModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Notificación</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content will be inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="debug.js"></script>
+    <script>
+        // Quitar loader inmediatamente
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+            }
+            
+            // Asegurar que el input sea visible
+            const messageInput = document.getElementById('messageInput');
+            const inputContainer = document.querySelector('.chat-input-container');
+            
+            if (messageInput) {
+                messageInput.style.display = 'block';
+                messageInput.style.visibility = 'visible';
+                messageInput.style.opacity = '1';
+                messageInput.style.position = 'relative';
+                messageInput.style.zIndex = '100';
+                console.log('✅ Input forzado a ser visible desde HTML');
+            }
+            
+            if (inputContainer) {
+                inputContainer.style.display = 'block';
+                inputContainer.style.visibility = 'visible';
+                console.log('✅ Contenedor input visible desde HTML');
+            }
+        });
+        
+        // También quitar loader si la página ya está cargada
+        if (document.readyState !== 'loading') {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+            }
+            
+            // Asegurar input visible inmediatamente
+            setTimeout(function() {
+                const messageInput = document.getElementById('messageInput');
+                const inputContainer = document.querySelector('.chat-input-container');
+                
+                if (messageInput) {
+                    messageInput.style.display = 'block';
+                    messageInput.style.visibility = 'visible';
+                    messageInput.style.opacity = '1';
+                }
+                
+                if (inputContainer) {
+                    inputContainer.style.display = 'block';
+                    inputContainer.style.visibility = 'visible';
+                }
+            }, 100);
+        }
+    </script>
+    <script src="script-simple-working.js"></script>
+</body>
+</html>

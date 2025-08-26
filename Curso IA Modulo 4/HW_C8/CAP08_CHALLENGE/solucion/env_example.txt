@@ -1,0 +1,25 @@
+# API Keys
+SERPER_API_KEY=82b26df9fd2c480881ed0b5cae7485c52d6d2859
+GROQ_API_KEY=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
+GOOGLE_AI_API_KEY=AIzaSyBmWgK0Nas0ONpR20d6wEvStp-iSMyWTEI
+
+# Configuración de Búsqueda
+SERPER_API_URL=https://google.serper.dev/search
+MAX_SEARCH_RESULTS=5
+
+# Configuración del LLM
+LLM_PROVIDER=groq
+GROQ_MODEL=llama3-8b-8192
+
+# Configuración de Streaming
+STREAMING_ENABLED=true
+STREAMING_CHUNK_SIZE=100
+
+# Headers para Web Scraping
+HEADER_ACCEPT_ENCODING=gzip
+HEADER_USER_AGENT=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+
+# Configuración de Redis (opcional)
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_DB=0
